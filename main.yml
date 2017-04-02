@@ -1,0 +1,33 @@
+- hosts: CentOS
+  user: root
+  tasks:
+    - name: Zabbix Repo Add
+      yum: name=http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-release-3.2-1.el7.noarch.rpm state=present
+    - name: zabbix-aentd 
+      yum: name=zabbix-agent state=present
+    - name: zabbix_agentd.conf
+      shell: cp -p /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.`date +%Y%m%d%H%m`
+
+    - name: zabbix_agentd.conf
+      shell: sed -i "s/Server=127.0.0.1/Server=59.106.219.95/g" /etc/zabbix/zabbix_agentd.conf
+
+    - name: zabbix_agentd.conf
+      shell: sed -i "s/ServerActive=/ServerActive=59.106.219.95/g" /etc/zabbix/zabbix_agentd.conf
+
+    - name: zabbix_agentd.conf
+      shell: sed -i "s//HostMetadata=linux/g" /etc/zabbix/zabbix_agentd.conf
+
+    - name: zabbix_agentd.conf
+      shell: sed -i "s/# HostMetadata=/HostMetadata=linux/g" /etc/zabbix/zabbix_agentd.conf
+
+    - name: zabbix_agentd.conf
+      shell: sed -i "s/# HostMetadata=/HostMetadata=linux/g" /etc/zabbix/zabbix_agentd.conf
+
+    - name: iptable firewall
+      shell: firewall-cmd --zone=public --add-port=10050/tcp --permanent
+
+    - name: zabbix-agent 再起動
+      shell: systemctl restart zabbix-agent 
+
+    - name: firewall 再起動
+      shell: systemctl restart firewalld 
